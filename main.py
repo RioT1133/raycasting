@@ -1,33 +1,51 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
+import numpy as np
 import random
 from camera import Camera
 from pixelData import PixelData
 from polygon import Polygon
 from ray import Ray
-from vertex import Vertex
 from world import World
 
-width, height = 800, 600
+width, height = 400, 300
 
-horizontal_fov = 92 # degrees
+horizontal_fov = 90 # degrees
 vertical_fov = (float(horizontal_fov)/float(width))*float(height) # degrees
 
 d_alpha = float(horizontal_fov)/float(width) # degrees
 
-init_dir = 0.0 # degrees
+v0 = np.array([3.0, 0.0, 0.0])
+v1 = np.array([3.3, 1.0, 1.0])
+v2 = np.array([3.6, 1.0, -1.0])
 
-camera = Camera(0, 0, 0, 0)
+polygon = Polygon(v0, v1, v2)
+
+world = World([polygon])
+
+init_dir = 0 # degrees
+
+camera = Camera(np.array([0, 0, 0]), 0.0)
+
+pixelData = PixelData(width, height)
 
 for i in range(height):
     for j in range(width):
-        camera.add_ray(float(height/2-i)  * d_alpha, float(-width/2+j) * d_alpha + init_dir)
+        inclination = float(height/2-i)  * d_alpha
+        azimuth = float(-width/2+j) * d_alpha + init_dir
+        camera.add_ray(inclination, azimuth)
+        # print(inclination, azimuth)
+        # print(len(camera.rays))
 
-pixel_data = PixelData(width, height)
+for i in range(len(camera.rays)):
+    distance = camera.rays[i].cast(world)
+    # print(i%width, i//width)
+    pixelData.set_pixel(i%width, i//width, distance, distance, distance)
+
 
 def draw_pixels():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    data = pixel_data.pixels # data must be a one-dimensional array, each pixel has 3 consecutive values
+    data = pixelData.pixels # data must be a one-dimensional array, each pixel has 3 consecutive values
     glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE, (GLubyte * len(data))(*data)) # last argument typecasts data into a list of GLubytes
     glutSwapBuffers()
 

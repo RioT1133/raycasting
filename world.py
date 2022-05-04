@@ -1,5 +1,5 @@
 class World:
-    def __init__(self, polygons):
+    def __init__(self, polygons=[]):
         self.polygons = polygons
     
     def add_polygon(self, p):
