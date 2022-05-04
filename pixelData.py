@@ -1,8 +1,11 @@
+import math
+import random
+
 class PixelData:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.pixels = [255 for i in range(3*width*height)]
+        self.pixels = [random.randint(0, 255) for i in range(3*width*height)]
     
     def get_pixel(self, x, y):
         return((self.pixels[3*self.width*y + x], self.pixels[3*self.width*y + x + 1], self.pixels[3*self.width*y + x + 2])) # returns the pixel's (at x, y) current rgb values in a tuple

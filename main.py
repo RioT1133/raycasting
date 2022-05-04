@@ -1,10 +1,14 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 import random
+from camera import Camera
 from pixelData import PixelData
+from polygon import Polygon
 from ray import Ray
+from vertex import Vertex
+from world import World
 
-width, height = 400, 300
+width, height = 800, 600
 
 horizontal_fov = 92 # degrees
 vertical_fov = (float(horizontal_fov)/float(width))*float(height) # degrees
@@ -13,12 +17,11 @@ d_alpha = float(horizontal_fov)/float(width) # degrees
 
 init_dir = 0.0 # degrees
 
-rays = []
+camera = Camera(0, 0, 0, 0)
 
 for i in range(height):
     for j in range(width):
-        ray = Ray(float(height/2-i)  * d_alpha, float(-width/2+j) * d_alpha + init_dir)
-        rays.append(ray)
+        camera.add_ray(float(height/2-i)  * d_alpha, float(-width/2+j) * d_alpha + init_dir)
 
 pixel_data = PixelData(width, height)
 
