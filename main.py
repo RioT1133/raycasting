@@ -40,7 +40,8 @@ for i in range(height):
 for i in range(len(camera.rays)):
     distance = camera.rays[i].cast(world)
     # print(i%width, i//width)
-    pixelData.set_pixel(i%width, i//width, distance, distance, distance)
+    alpha = -distance + 255
+    pixelData.set_pixel(i%width, i//width, alpha, alpha, alpha)
 
 
 def draw_pixels():

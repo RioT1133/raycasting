@@ -24,15 +24,18 @@ class Ray:
             u = np.dot(s, h) * f
 
             if u < 0 or u > 1:
+                print(f"broke at 1, u={u}")
                 break
 
             q = np.cross(s, e1)
             v = np.dot(self.dir, q)
 
             if v < 0.0 or u + v > 1.0:
+                print("broke at 2")
                 break
 
             t = np.dot(q, e2) * f
+            print(f"t = {t}")
 
             if t < shortest_distance:
                 shortest_distance = t
