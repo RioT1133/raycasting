@@ -1,42 +1,39 @@
-from asyncio.windows_events import NULL
+from cmath import inf
+import math
 import numpy as np
 
 class Ray:
-    def __init__(self, dir, origin): # inclination is up-down (+-z), azimuth is left-right(+-y)
+    def __init__(self, dir, origin):
         self.dir = dir
         self.origin = origin
 
     # doomsday source: https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
-    def cast(self, world): # begin doomsday
-        shortest_distance = 255
-        for polygon in world.polygons:
-            e1 = np.subtract(polygon.v1, polygon.v0)
-            e2 = np.subtract(polygon.v2, polygon.v0)
-            h = np.cross(self.dir, e2)
-            a = np.dot(e1, h)
+    def cast(self, polygon): # begin doomsday
+        # print(f"casting ray with direction {self.dir} and origin {self.origin}")
+        e1 = np.subtract(polygon.v1, polygon.v0)
+        e2 = np.subtract(polygon.v2, polygon.v0)
+        h = np.cross(self.dir, e2)
+        a = np.inner(e1, h)
 
-            if a > -0.00001 and a < 0.00001:
-                break
+        if a > -0.0000001 and a < 0.0000001:
+            return inf
 
-            f = 1/a
+        f = 1/a
 
-            s = np.subtract(self.origin, polygon.v0)
-            u = np.dot(s, h) * f
+        s = np.subtract(self.origin, polygon.v0)
+        u = np.inner(s, h) * f
 
-            if u < 0 or u > 1:
-                print(f"broke at 1, u={u}")
-                break
+        if u < 0 or u > 1:
+            # print(f"broke at 1, u={u}")
+            return inf
 
-            q = np.cross(s, e1)
-            v = np.dot(self.dir, q)
+        q = np.cross(s, e1)
+        v = np.inner(self.dir, q)
 
-            if v < 0.0 or u + v > 1.0:
-                print("broke at 2")
-                break
+        if v < 0.0 or u + v > 1.0:
+            # print("broke at 2")
+            return inf
 
-            t = np.dot(q, e2) * f
-            print(f"t = {t}")
-
-            if t < shortest_distance:
-                shortest_distance = t
-        return shortest_distance # end doomsday
+        t = np.inner(q, e2) * f
+        return t
+        
