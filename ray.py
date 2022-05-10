@@ -23,8 +23,6 @@ class Ray:
         u = inverse*np.dot(c1, bigT)
         v = inverse*np.dot(c2, self.dir)
 
-        print(t, u, v)
-
         if u >= 0 and v >= 0 and u + v <= 1:
             return t
         else:

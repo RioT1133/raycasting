@@ -21,13 +21,17 @@ d_alpha = float(horizontal_fov)/float(width) # degrees
 x_inc = 0
 y_inc = 0
 
-v0 = np.array([2.0 + x_inc, 1.0 + y_inc, 3.0])
-v1 = np.array([2.0 + x_inc, -2.0 + y_inc, 3.0])
-v2 = np.array([-1.0 + x_inc, -1.0 + y_inc, 3.0])
+v0 = np.array([5.0, 1.0, 7.5])
+v1 = np.array([-2.0, 4.0, 7.0])
+v2 = np.array([-2.0, -2.0, 6.0])
+v3 = np.array([0.0, 0.0, 2.0])
 
 p1 = Polygon(v0, v1, v2)
+p2 = Polygon(v1, v2, v3)
+p3 = Polygon(v2, v3, v0)
+p4 = Polygon(v3, v0, v1)
 
-world = World([p1])
+world = World([p1, p2, p3, p4])
 
 camera = Camera(np.array([-0.0, 0.0, 0.0]))
 
@@ -40,14 +44,18 @@ for i in range(height):
         # print(-width/2 + j, -height/2 + i, plane_dist)
 
 for i in range(len(camera.rays)):
-    distance = camera.rays[i].cast(world.polygons[0])
+    smallest_dist = inf
+    for j in range(len(world.polygons)):
+        distance = camera.rays[i].cast(world.polygons[j])
+        if distance < smallest_dist:
+            smallest_dist = distance
     # print(i%width, i//width)
     # print(distance)
-    if distance == inf:
+    if smallest_dist == inf:
         brightness = 0
     else:
         # print(distance)
-        brightness = int(((-(distance*distance)) + 255) * 8.0)
+        brightness = int(((-(math.sqrt(smallest_dist))) + 255) * 128.0)
     # print(brightness)
     pixelData.set_pixel(i%width, i//width, brightness, brightness, brightness)
 
