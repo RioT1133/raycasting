@@ -21,9 +21,9 @@ d_alpha = float(horizontal_fov)/float(width) # degrees
 x_inc = 0
 y_inc = 0
 
-v0 = np.array([0.0 + x_inc, 1.0 + y_inc, 3.0])
-v1 = np.array([-1.0 + x_inc, 0.0 + y_inc, 3.0])
-v2 = np.array([0.0 + x_inc, -6.0 + y_inc, 3.0])
+v0 = np.array([2.0 + x_inc, 1.0 + y_inc, 3.0])
+v1 = np.array([2.0 + x_inc, -2.0 + y_inc, 3.0])
+v2 = np.array([-1.0 + x_inc, -1.0 + y_inc, 3.0])
 
 p1 = Polygon(v0, v1, v2)
 
@@ -37,6 +37,7 @@ pixelData = PixelData(width, height)
 for i in range(height):
     for j in range(width):
         camera.add_ray(-width/2 + j, -height/2 + i, plane_dist)
+        # print(-width/2 + j, -height/2 + i, plane_dist)
 
 for i in range(len(camera.rays)):
     distance = camera.rays[i].cast(world.polygons[0])
@@ -45,7 +46,7 @@ for i in range(len(camera.rays)):
     if distance == inf:
         brightness = 0
     else:
-        print(distance)
+        # print(distance)
         brightness = int(((-(distance*distance)) + 255) * 8.0)
     # print(brightness)
     pixelData.set_pixel(i%width, i//width, brightness, brightness, brightness)

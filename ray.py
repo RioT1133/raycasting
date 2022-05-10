@@ -11,29 +11,22 @@ class Ray:
     def cast(self, polygon): # begin doomsday
         # print(f"casting ray with direction {self.dir} and origin {self.origin}")
         e1 = np.subtract(polygon.v1, polygon.v0)
-        e2 = np.subtract(polygon.v2, polygon.v0)
-        h = np.cross(self.dir, e2)
-        a = np.inner(e1, h)
+        e2 = np.subtract(polygon.v2,polygon.v0)
+        bigT = np.subtract(self.origin, polygon.v0)
 
-        if a > -0.0000001 and a < 0.0000001:
+        c1 = np.cross(self.dir, e2)
+        c2 = np.cross(bigT, e1)
+
+        inverse = 1/(np.dot(c1, e1))
+
+        t = inverse*np.dot(c2, e2)
+        u = inverse*np.dot(c1, bigT)
+        v = inverse*np.dot(c2, self.dir)
+
+        print(t, u, v)
+
+        if u >= 0 and v >= 0 and u + v <= 1:
+            return t
+        else:
             return inf
-
-        f = 1/a
-
-        s = np.subtract(self.origin, polygon.v0)
-        u = np.inner(s, h) * f
-
-        if u < 0 or u > 1:
-            # print(f"broke at 1, u={u}")
-            return inf
-
-        q = np.cross(s, e1)
-        v = np.inner(self.dir, q)
-
-        if v < 0.0 or u + v > 1.0:
-            # print("broke at 2")
-            return inf
-
-        t = np.inner(q, e2) * f
-        return t
         
